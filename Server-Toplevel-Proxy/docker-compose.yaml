@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+
+  outer:
+    container_name: outer
+    env_file: .env
+    image: nginxproxy/nginx-proxy:dev
+    ports:
+      - "80:80"
+      #- "443:443"
+    restart: always
+    environment:
+      - DEFAULT_HOST=192.168.178.35
+    logging:
+      driver: local #or "none" or "local"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro # allow to read running dockers
+      #- ./nginx/test:/etc/nginx/conf.d # to see the config output
+      - ./Proxy/conf.d/unrestricted_size.conf:/etc/nginx/conf.d/unrestricted_size.conf
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    name: topDomainProxy
